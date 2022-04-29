@@ -28,7 +28,7 @@ const app = {
     const quote = document.querySelector('.quote');
     const author = document.querySelector('.author');
     quote.textContent = `"${data.content}"`;
-    author.textContent = `- ${data.author}`;
+    author.textContent = `- ${data.characts}`;
   },
 
   async getSound() {
@@ -43,9 +43,24 @@ const app = {
 
   viewSound(data) {
     const sound = document.querySelector('.sound');
-    const link = document.querySelector('.link');
-    sound.textContent = `${data.name}`;
-    link.textContent = `${data.path}`;
+    const link = document.querySelectorAll('.link');
+    const play = document.querySelector('#play');
+    sound.textContent = `${data.name.split('_').join(' ')}`;
+    link[0].textContent = 'Download';
+
+    for (let i = 0; i < link.length; i++) {
+      link[i].style.display = 'inline-block';
+    }
+
+    link[0].href = `${data.path}`;
+    play.textContent = 'Play';
+    play.href = `${data.path}`;
+
+    play.addEventListener('click', (e) => {
+      e.preventDefault();
+      const audio = new Audio(play.href);
+      audio.play();
+    });
   },
 };
 
