@@ -1,19 +1,34 @@
 {
-  "name": "s03e05-test-ejs",
+  "name": "kaamelott",
   "version": "1.0.0",
-  "description": "",
+  "description": "dossier complet, views, data, public, et configurer pour installation node server + express + ejs",
   "main": "index.js",
   "scripts": {
     "dev": "node-dev --no-notify ./app.js",
     "start": "node ./app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "kenny caldieraro || webplayground",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
+    "eslint-config-airbnb-base": "^15.0.0",
     "express": "^4.17.3",
-    "node-dev": "^7.1.0"
-  }
+    "fs-extra": "^10.1.0",
+    "mysql2": "^2.3.3",
+    "node-dev": "^7.1.0",
+    "sequelize": "^6.19.0"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenny-caldieraro/kaamelott.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kenny-caldieraro/kaamelott/issues"
+  },
+  "homepage": "https://github.com/kenny-caldieraro/kaamelott#readme"
 }

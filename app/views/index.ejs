@@ -1,4 +1,20 @@
 <%- include('./partials/header') %>
-<h1>Hello, world !</h1>
-<p>Hello, <%= var1 %> <%= var2 %></p>
+
+<header class="title">
+  <h1>Kaamelott</h1>
+  <h2>l'API à la volette</h2>
+</header>
+<div class="command">
+  <aside id="quote">
+    <button class="button-56" id="getQuote">Get quote</button>
+    <p class="quote"></p>
+    <p class="author"></p>
+  </aside>
+  <aside id="sound">
+    <button class="button-56" id="getSound">Get sound</button>
+    <p class="sound"></p>
+    <p class="link"></p>
+  </aside>
+</div>
+
 <%- include('./partials/footer') %>

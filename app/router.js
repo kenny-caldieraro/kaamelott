@@ -1,11 +1,13 @@
-const express = require("express");
-const mainController = require("./controllers/mainController");
+const express = require('express');
+
+const routerWeb = require('./routers/web');
+const routerQuotes = require('./routers/quotes');
+const routerSound = require('./routers/sounds');
+
 const router = express.Router();
 
-router.use(mainController.logUrl);
-
-router.get("/", mainController.mainUrl);
-
-router.use(mainController.error404);
+router.use('/api/v1/quote', routerQuotes);
+router.use('/api/v1/sound', routerSound);
+router.use('/', routerWeb);
 
 module.exports = router;

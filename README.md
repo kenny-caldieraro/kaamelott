@@ -1,54 +1,46 @@
-# Dossier_base_server_node
-dossier complet, views, data, public, et configurer pour installation node server + express + ejs
+# Kaamelott, Best Punchline
 
-# app.js (server node)
+The website for test https://kaamelott.xyz
 
-```js
-// Importation express et router
-const express = require("express");
-const app = express();
-const router = require("./router");
-const PORT = process.env.PORT || 3000;
+## Database
 
-// Configuration du moteur de template EJS
-app.set("view engine", "ejs");
-// Importation des fichiers statiques
-app.set("views", "./views");
-app.use(express.static("public"));
+I use mysql and sequelize to manage my database.
 
-// Configuration de la route /
-app.use(router);
+### API Quotes
 
-// Lancement du serveur
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+End Points :
+```
+https://kaamelott.xyz/api/v1/quote/all
+https://kaamelott.xyz/api/v1/quote/random
+https://kaamelott.xyz/api/v1/quote/:id
 ```
 
-# router.js
-
-```js
-// Importations express et router
-const express = require("express");
-const router = express.Router();
-
-// Exportation du module router
-module.exports = router;
-
-// Configuration route /
-router.get("/", (req, res) => {
-  res.render("index", {
-    var1: "Dossier de base",
-    var2: "Node.js, Express.js, ejs",
-  });
-});
+Response example :
+```json
+{
+    "id": 47,
+    "content": " Si Monsieur et Madame préfèrent s'envoyer des fions dans l'intimité, je peux aussi me retirer.",
+    "actor": "Vanessa Guedj",
+    "characts": "Angharad",
+    "author": "Alexandre Astier",
+    "season": "Livre II ",
+    "episode": " 37 : La Joute Ancillaire"
+}
 ```
 
-# index.ejs
+### API SOUND
+  
+  End Points :
+  ```
+  https://kaamelott.xyz/api/v1/sound/all
+  https://kaamelott.xyz/api/v1/sound/random
+  https://kaamelott.xyz/api/v1/sound/:text
+  ```
 
-```html
-<%- include('./partials/header') %>
-<h1>Hello, world !</h1>
-<p>Hello, <%= var1 %> <%= var2 %></p>
-<%- include('./partials/footer') %>
-```
+  Response example :
+  ```json
+  {
+      "name": "le_caca_des_pigeons_c_est_caca_faut_pas_manger.mp3",
+      "path": "https://kaamelott.xyz/sounds/le_caca_des_pigeons_c_est_caca_faut_pas_manger.mp3"
+  }
+  ```
