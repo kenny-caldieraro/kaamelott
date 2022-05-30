@@ -1,15 +1,15 @@
 const app = {
-  mainURL: 'https://kaamelott.xyz/api/v1/',
+  mainURL: "https://kaamelott.xyz/api/v1/",
 
   init() {
     app.handleClick();
   },
 
   handleClick() {
-    document.getElementById('getQuote').addEventListener('click', () => {
+    document.getElementById("getQuote").addEventListener("click", () => {
       app.getQuote();
     });
-    document.getElementById('getSound').addEventListener('click', () => {
+    document.getElementById("getSound").addEventListener("click", () => {
       app.getSound();
     });
   },
@@ -25,8 +25,8 @@ const app = {
   },
 
   viewQuote(data) {
-    const quote = document.querySelector('.quote');
-    const author = document.querySelector('.author');
+    const quote = document.querySelector(".quote");
+    const author = document.querySelector(".author");
     quote.textContent = `"${data.content}"`;
     author.textContent = `- ${data.characts}`;
   },
@@ -42,21 +42,23 @@ const app = {
   },
 
   viewSound(data) {
-    const sound = document.querySelector('.sound');
-    const link = document.querySelectorAll('.link');
-    const play = document.querySelector('#play');
-    sound.textContent = `${data.name.split('_').join(' ')}`;
-    link[0].textContent = 'Download';
+    const sound = document.querySelector(".sound");
+    const link = document.querySelectorAll(".link");
+    const play = document.querySelector("#play");
+    let name = data.name.split("_").join(" ");
+    name = name.split(/.mp3/).join("");
+    sound.textContent = name;
+    link[0].textContent = "Download";
 
     for (let i = 0; i < link.length; i++) {
-      link[i].style.display = 'inline-block';
+      link[i].style.display = "inline-block";
     }
 
     link[0].href = `${data.path}`;
-    play.textContent = 'Play';
+    play.textContent = "Play";
     play.href = `${data.path}`;
 
-    play.addEventListener('click', (e) => {
+    play.addEventListener("click", (e) => {
       e.preventDefault();
       const audio = new Audio(play.href);
       audio.play();
@@ -64,4 +66,4 @@ const app = {
   },
 };
 
-document.addEventListener('DOMContentLoaded', app.init);
+document.addEventListener("DOMContentLoaded", app.init);

@@ -31,6 +31,10 @@ aside {
   margin-left: 2rem;
 }
 
+#quote {
+  width: 30%;
+}
+
 button {
   margin: 0 auto;
 }
@@ -102,6 +106,10 @@ img {
 .link:hover {
   background: #fff;
   color: #000;
+}
+
+.sound {
+  text-align: center;
 }
 
 /* BUTTON */

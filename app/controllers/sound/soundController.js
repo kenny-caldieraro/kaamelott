@@ -1,9 +1,9 @@
-const fs = require('fs-extra');
+const fs = require("fs-extra");
 
 const soundController = {
   async getSounds(_, res) {
     try {
-      const sounds = await fs.readdirSync('./public/sounds');
+      const sounds = await fs.readdirSync("./public/sounds");
       const paths = sounds.map((sound) => ({
         name: sound,
         path: `${process.env.URL_API}sounds/${sound}`,
@@ -25,9 +25,9 @@ const soundController = {
       //   res.status(404).render('404');
       // }
       const response = {};
-      const sounds = await fs.readdirSync('./public/sounds');
+      const sounds = await fs.readdirSync("./public/sounds");
 
-      soundName.split(' ').find((word) => {
+      soundName.split(" ").find((word) => {
         const sound = sounds.find((data) => data.includes(word));
         if (sound) {
           response.name = sound;
@@ -51,7 +51,7 @@ const soundController = {
 
   async randomSound(_, res) {
     try {
-      const sounds = await fs.readdirSync('./public/sounds');
+      const sounds = await fs.readdirSync("./public/sounds");
       const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
       const soundPath = `${process.env.URL_API}sounds/${randomSound}`;
       res.json({
