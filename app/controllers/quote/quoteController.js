@@ -47,6 +47,10 @@ const quoteController = {
       });
     }
   },
+
+  async easterEgg(_, res) {
+    res.status(418).json({ error: "I'm a teapot" });
+  },
 };
 
 module.exports = quoteController;
