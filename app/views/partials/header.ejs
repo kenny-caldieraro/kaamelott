@@ -43,10 +43,10 @@
   <meta name="twitter:description" content="<%= meta.description %>">
   <meta name="twitter:image" content="<%= ogImage %>">
 
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" href="/images/icon-192.png" type="image/png">
-  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" href="/favicon.ico?v=<%= assetVersion %>" sizes="32x32">
+  <link rel="icon" href="/favicon.svg?v=<%= assetVersion %>" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=<%= assetVersion %>">
+  <link rel="manifest" href="/site.webmanifest?v=<%= assetVersion %>">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,7 +79,7 @@
   <header class="site-header">
     <nav class="nav container" aria-label="Navigation principale">
       <a class="brand" href="/" aria-label="Kaamelott API – accueil">
-        <img src="/images/icon-192.png" alt="" width="36" height="36">
+        <img src="/favicon.svg?v=<%= assetVersion %>" alt="" width="34" height="34">
         <span>Kaamelott<span class="brand-api">API</span></span>
       </a>
       <ul class="nav-links">
