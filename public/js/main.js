@@ -75,11 +75,27 @@ const app = {
   renderQuote(data) {
     const clean = (value) => (value || '').trim();
     app.quote.querySelector('.quote-text').textContent = `« ${clean(data.content)} »`;
-    app.quote.querySelector('.quote-character').textContent = clean(data.characts);
+    const character = app.quote.querySelector('.quote-character');
+    character.textContent = '';
+    if (clean(data.characts)) {
+      const link = document.createElement('a');
+      link.href = `/personnages/${app.slugify(data.characts)}`;
+      link.textContent = clean(data.characts);
+      character.append(link);
+    }
     app.quote.querySelector('.quote-details').textContent = [data.actor, data.season, data.episode]
       .map(clean)
       .filter(Boolean)
       .join(' · ');
+  },
+
+  slugify(text) {
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
   },
 
   /* ---------- Lecteur ---------- */
@@ -151,6 +167,14 @@ const app = {
     const count = document.getElementById('soundCount');
     const empty = document.getElementById('soundEmpty');
     const items = [...grid.children];
+    const more = document.getElementById('soundMore');
+
+    if (more) {
+      more.addEventListener('click', () => {
+        grid.classList.add('is-expanded');
+        more.parentElement.remove();
+      });
+    }
 
     grid.addEventListener('click', (event) => {
       const button = event.target.closest('.sound-item');
@@ -179,6 +203,9 @@ const app = {
         item.classList.toggle('is-hidden', !match);
         if (match) visible += 1;
       });
+      // Pendant une recherche, on cherche dans toute la sonothèque
+      grid.classList.toggle('is-searching', words.length > 0);
+      if (more) more.parentElement.classList.toggle('is-hidden', words.length > 0);
       count.textContent = `${visible} son${visible > 1 ? 's' : ''}`;
       empty.classList.toggle('is-hidden', visible > 0);
     });

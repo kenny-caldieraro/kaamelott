@@ -1,0 +1,57 @@
+<%
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        name: 'Les personnages de Kaamelott',
+        url: siteUrl + '/personnages',
+        inLanguage: 'fr-FR',
+        isPartOf: { '@id': siteUrl + '/#website' },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl + '/' },
+          { '@type': 'ListItem', position: 2, name: 'Personnages', item: siteUrl + '/personnages' },
+        ],
+      },
+    ],
+  };
+%>
+<%- include('./partials/header', { head: include('./partials/jsonld', { data: jsonLd }) }) %>
+
+<main id="main" class="page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <a href="/">Accueil</a><span aria-hidden="true">/</span><span aria-current="page">Personnages</span>
+    </nav>
+
+    <header class="page-head">
+      <p class="eyebrow">La Table ronde et les autres</p>
+      <h1>Les personnages de Kaamelott</h1>
+      <p class="section-lead">
+        <%= characters.length %> personnages, <%= characters.reduce((sum, c) => sum + c.count, 0) %> citations.
+        Choisissez votre personnage préféré pour retrouver toutes ses répliques cultes, classées par livre et par épisode.
+      </p>
+    </header>
+
+    <ul class="character-grid">
+      <% characters.forEach((character) => { %>
+      <li>
+        <a class="character-card" href="/personnages/<%= character.slug %>">
+          <span class="character-initial" aria-hidden="true"><%= character.name.replace(/^(Le |La |Les |L')/i, '').charAt(0) %></span>
+          <span class="character-info">
+            <span class="character-name"><%= character.name %></span>
+            <span class="character-meta">
+              <%= character.count %> citation<%= character.count > 1 ? 's' : '' %><% if (character.actor) { %> · <%= character.actor %><% } %>
+            </span>
+          </span>
+        </a>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
+</main>
+
+<%- include('./partials/footer') %>

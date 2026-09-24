@@ -23,9 +23,8 @@
       },
     ],
   };
-  const head = '<script type="application/ld+json">' + JSON.stringify(jsonLd).replace(/</g, '\\u003c') + '</script>';
 %>
-<%- include('./partials/header', { head }) %>
+<%- include('./partials/header', { head: include('./partials/jsonld', { data: jsonLd }) }) %>
 
 <main id="main">
   <section class="hero" aria-labelledby="hero-title">
@@ -61,13 +60,13 @@
             <% if (quote) { %>
               <p class="quote-text">« <%= quote.content.trim() %> »</p>
               <footer class="quote-meta">
-                <cite class="quote-character"><%= (quote.characts || '').trim() %></cite>
+                <cite class="quote-character"><% if (quote.characts) { %><a href="/personnages/<%= slugify(quote.characts) %>"><%= quote.characts.trim() %></a><% } %></cite>
                 <span class="quote-details"><%= [quote.actor, quote.season, quote.episode].filter(Boolean).map((s) => s.trim()).join(' · ') %></span>
               </footer>
             <% } else { %>
               <p class="quote-text">« C'est pas faux. »</p>
               <footer class="quote-meta">
-                <cite class="quote-character">Perceval</cite>
+                <cite class="quote-character"><a href="/personnages/perceval">Perceval</a></cite>
                 <span class="quote-details">Franck Pitiot</span>
               </footer>
             <% } %>
@@ -99,6 +98,23 @@
     </div>
   </section>
 
+  <% if (characters.length) { %>
+  <section id="personnages" class="section section-tight" aria-labelledby="characters-title">
+    <div class="container">
+      <header class="section-head">
+        <p class="eyebrow">Personnages</p>
+        <h2 id="characters-title">Les citations par personnage</h2>
+      </header>
+      <ul class="chips">
+        <% characters.slice(0, 18).forEach((character) => { %>
+        <li><a class="chip" href="/personnages/<%= character.slug %>"><%= character.name %> <span><%= character.count %></span></a></li>
+        <% }) %>
+        <li><a class="chip chip-all" href="/personnages">Tous les personnages →</a></li>
+      </ul>
+    </div>
+  </section>
+  <% } %>
+
   <section id="sonotheque" class="section section-alt" aria-labelledby="library-title">
     <div class="container">
       <header class="section-head">
@@ -117,8 +133,8 @@
       </div>
 
       <ul class="sound-grid" id="soundGrid">
-        <% sounds.forEach((sound) => { %>
-        <li data-keywords="<%= sound.keywords %>">
+        <% sounds.forEach((sound, index) => { %>
+        <li data-keywords="<%= sound.keywords %>"<% if (index >= 24) { %> class="is-collapsed"<% } %>>
           <button class="sound-item" type="button" data-src="<%= sound.path %>" data-title="<%= sound.title %>">
             <span class="sound-icon" aria-hidden="true"></span>
             <span class="sound-label"><%= sound.title %></span>
@@ -129,6 +145,11 @@
         </li>
         <% }) %>
       </ul>
+      <% if (sounds.length > 24) { %>
+      <div class="show-more">
+        <button class="btn btn-ghost" type="button" id="soundMore">Afficher les <%= sounds.length %> sons</button>
+      </div>
+      <% } %>
       <p class="empty is-hidden" id="soundEmpty">Aucune réplique trouvée. « Ah non, là aujourd'hui ça passera pas. »</p>
     </div>
   </section>

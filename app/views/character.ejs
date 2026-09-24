@@ -1,0 +1,86 @@
+<%
+  const url = siteUrl + '/personnages/' + character.slug;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        name: 'Citations de ' + character.name,
+        url,
+        inLanguage: 'fr-FR',
+        isPartOf: { '@id': siteUrl + '/#website' },
+        about: {
+          '@type': 'Person',
+          name: character.name,
+          description: character.description || undefined,
+        },
+        hasPart: quotes.slice(0, 50).map((quote) => ({
+          '@type': 'Quotation',
+          text: quote.content,
+          spokenByCharacter: { '@type': 'Person', name: character.name },
+          creator: { '@type': 'Person', name: 'Alexandre Astier' },
+          isPartOf: { '@type': 'TVSeries', name: 'Kaamelott' },
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl + '/' },
+          { '@type': 'ListItem', position: 2, name: 'Personnages', item: siteUrl + '/personnages' },
+          { '@type': 'ListItem', position: 3, name: character.name, item: url },
+        ],
+      },
+    ],
+  };
+%>
+<%- include('./partials/header', { head: include('./partials/jsonld', { data: jsonLd }) }) %>
+
+<main id="main" class="page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <a href="/">Accueil</a><span aria-hidden="true">/</span>
+      <a href="/personnages">Personnages</a><span aria-hidden="true">/</span>
+      <span aria-current="page"><%= character.name %></span>
+    </nav>
+
+    <header class="page-head character-head">
+      <span class="character-initial is-large" aria-hidden="true"><%= character.name.replace(/^(Le |La |Les |L')/i, '').charAt(0) %></span>
+      <div>
+        <p class="eyebrow"><%= quotes.length %> citation<%= quotes.length > 1 ? 's' : '' %><% if (character.actor) { %> · Interprété par <%= character.actor %><% } %></p>
+        <h1>Citations de <%= character.name %></h1>
+        <% if (character.description) { %>
+        <p class="section-lead"><%= character.description %></p>
+        <% } else { %>
+        <p class="section-lead">Toutes les répliques de <%= character.name %> dans la série Kaamelott d'Alexandre Astier, classées par livre et par épisode.</p>
+        <% } %>
+      </div>
+    </header>
+
+    <ol class="quote-list">
+      <% quotes.forEach((quote) => { %>
+      <li id="citation-<%= quote.id %>">
+        <blockquote class="quote-item">
+          <p>« <%= quote.content %> »</p>
+          <% if (quote.season || quote.episode) { %>
+          <footer><%= [quote.season, quote.episode].filter(Boolean).join(' · ') %></footer>
+          <% } %>
+        </blockquote>
+      </li>
+      <% }) %>
+    </ol>
+
+    <% if (others.length) { %>
+    <section class="related" aria-labelledby="related-title">
+      <h2 id="related-title">Les autres personnages</h2>
+      <ul class="chips">
+        <% others.forEach((other) => { %>
+        <li><a class="chip" href="/personnages/<%= other.slug %>"><%= other.name %> <span><%= other.count %></span></a></li>
+        <% }) %>
+        <li><a class="chip chip-all" href="/personnages">Tous les personnages →</a></li>
+      </ul>
+    </section>
+    <% } %>
+  </div>
+</main>
+
+<%- include('./partials/footer') %>

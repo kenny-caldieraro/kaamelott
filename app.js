@@ -7,6 +7,7 @@ const path = require('node:path');
 const config = require('./app/config');
 const canonicalHost = require('./app/middlewares/canonicalHost');
 const router = require('./app/router');
+const { slugify } = require('./app/utils');
 const { version } = require('./package.json');
 
 const app = express();
@@ -18,6 +19,7 @@ app.set('views', path.join(__dirname, 'app/views'));
 
 app.locals.siteUrl = config.siteUrl;
 app.locals.assetVersion = version;
+app.locals.slugify = slugify;
 
 app.use(canonicalHost);
 app.use(helmet({

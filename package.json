@@ -1,6 +1,6 @@
 {
   "name": "kaamelott",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "API et sonothèque Kaamelott : citations et répliques audio cultes (Node.js, Express, EJS)",
   "main": "app.js",
   "scripts": {
