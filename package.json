@@ -1,26 +1,24 @@
 {
   "name": "kaamelott",
-  "version": "1.0.0",
-  "description": "dossier complet, views, data, public, et configurer pour installation node server + express + ejs",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "API et sonothèque Kaamelott : citations et répliques audio cultes (Node.js, Express, EJS)",
+  "main": "app.js",
   "scripts": {
-    "dev": "node-dev --no-notify ./app.js",
-    "start": "node ./app.js"
+    "dev": "node --watch app.js",
+    "start": "NODE_ENV=production node app.js"
   },
   "keywords": [],
   "author": "kenny caldieraro || webplayground",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.0",
-    "ejs": "^3.1.6",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "express": "^4.17.3",
-    "fs-extra": "^10.1.0",
-    "multer": "^1.4.4",
-    "mysql2": "^2.3.3",
-    "node-dev": "^7.1.0",
-    "sequelize": "^6.19.0"
+    "compression": "^1.8.2",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.3",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "helmet": "^8.3.0",
+    "mysql2": "^3.24.4",
+    "sequelize": "^6.37.8"
   },
   "directories": {
     "doc": "docs"
@@ -32,5 +30,8 @@
   "bugs": {
     "url": "https://github.com/kenny-caldieraro/kaamelott/issues"
   },
-  "homepage": "https://github.com/kenny-caldieraro/kaamelott#readme"
+  "homepage": "https://github.com/kenny-caldieraro/kaamelott#readme",
+  "engines": {
+    "node": ">=20"
+  }
 }

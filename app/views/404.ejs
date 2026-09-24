@@ -1,5 +1,16 @@
 <%- include('./partials/header') %>
-<aside class="title">
-  <h2>404 L'API ne répond plus</h2>
-</aside>
+<main id="main" class="error-page">
+  <div class="container error-inner">
+    <p class="eyebrow"><%= typeof status !== 'undefined' ? status : 404 %></p>
+    <h1>C'est pas faux…</h1>
+    <p class="lead">
+      <% if (typeof status !== 'undefined' && status === 500) { %>
+        Une erreur est survenue de notre côté. Même Merlin n'y comprend rien.
+      <% } else { %>
+        Cette page n'existe pas, ou alors elle est partie en quête du Graal sans prévenir personne.
+      <% } %>
+    </p>
+    <a class="btn btn-primary" href="/">Retour à Kaamelott</a>
+  </div>
+</main>
 <%- include('./partials/footer') %>

@@ -1,15 +1,17 @@
 const { Sequelize } = require('sequelize');
 const Quote = require('../../models/quotes');
 
+const handleError = (res, error) => {
+  res.status(500).json({ error: error.message });
+};
+
 const quoteController = {
   async getQuotes(_, res) {
     try {
       const quotes = await Quote.findAll();
       res.json(quotes);
     } catch (error) {
-      res.status(500).json({
-        error: error.message,
-      });
+      handleError(res, error);
     }
   },
 
@@ -18,37 +20,30 @@ const quoteController = {
       const quote = await Quote.findOne({
         order: [Sequelize.fn('RAND')],
       });
+      res.set('Cache-Control', 'no-store');
       res.json(quote);
     } catch (error) {
-      res.status(500).json({
-        error: error.message,
-      });
+      handleError(res, error);
     }
   },
 
   async getQuote(req, res, next) {
     try {
       const quoteId = Number(req.params.id);
-      if (isNaN(quoteId)) {
+      if (!Number.isInteger(quoteId)) {
         return next();
       }
-      const quote = await Quote.findOne({
-        where: {
-          id: quoteId,
-        },
-      });
+      const quote = await Quote.findByPk(quoteId);
       if (!quote) {
         return next();
       }
-      res.json(quote);
+      return res.json(quote);
     } catch (error) {
-      res.status(500).json({
-        error: error.message,
-      });
+      return handleError(res, error);
     }
   },
 
-  async easterEgg(_, res) {
+  easterEgg(_, res) {
     res.status(418).json({ error: "I'm a teapot" });
   },
 };

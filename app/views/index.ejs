@@ -1,23 +1,188 @@
-<%- include('./partials/header') %>
+<%
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': siteUrl + '/#website',
+        url: siteUrl + '/',
+        name: 'Kaamelott API',
+        inLanguage: 'fr-FR',
+        description: 'API gratuite de citations et de répliques audio de la série Kaamelott.',
+      },
+      {
+        '@type': 'WebAPI',
+        '@id': siteUrl + '/#api',
+        name: 'Kaamelott API',
+        description: 'API REST publique renvoyant des citations et des extraits sonores de Kaamelott au format JSON.',
+        documentation: siteUrl + '/#api',
+        url: siteUrl + '/api/v1/',
+        isAccessibleForFree: true,
+        inLanguage: 'fr-FR',
+        provider: { '@type': 'Person', name: 'Kenny Caldieraro', url: 'https://github.com/kenny-caldieraro' },
+      },
+    ],
+  };
+  const head = '<script type="application/ld+json">' + JSON.stringify(jsonLd).replace(/</g, '\\u003c') + '</script>';
+%>
+<%- include('./partials/header', { head }) %>
 
-<header class="title">
-  <h1>Kaamelott</h1>
-  <h2>l'API à la volette</h2>
-</header>
-<div class="command">
-  <aside id="quote">
-    <button class="button-56" id="getQuote">Get quote</button>
-    <p class="quote"></p>
-    <p class="author"></p>
-  </aside>
-  <aside id="sound">
-    <button class="button-56" id="getSound">Get sound</button>
-    <p class="sound"></p>
-    <div class="control">
-      <a class="link" href="" target="_blank"></a>
-      <a class="link play" id="play" href=""></a>
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <picture class="hero-bg">
+      <source type="image/webp" srcset="/images/bg-1024.webp 1024w, /images/bg.webp 1920w" sizes="100vw">
+      <img src="/images/bg.jpg" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">
+    </picture>
+    <div class="container hero-content">
+      <p class="eyebrow">API gratuite · Open source · Sans clé</p>
+      <h1 id="hero-title">Kaamelott<span class="hero-sub">l'API à la volette</span></h1>
+      <p class="lead">
+        Des centaines de citations cultes et <strong><%= sounds.length %> répliques audio</strong>
+        d'Arthur, Perceval, Karadoc et toute la Table ronde, à piocher au hasard ou à intégrer dans vos projets.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#citation">Tirer une citation</a>
+        <a class="btn btn-ghost" href="#api">Documentation de l'API</a>
+      </div>
     </div>
-  </aside>
-</div>
+  </section>
+
+  <section id="citation" class="section" aria-labelledby="random-title">
+    <div class="container">
+      <header class="section-head">
+        <p class="eyebrow">Au hasard</p>
+        <h2 id="random-title">Une citation, un son, et c'est reparti</h2>
+      </header>
+
+      <div class="cards">
+        <article class="card card-quote" aria-live="polite">
+          <h3 class="card-title">Citation</h3>
+          <blockquote class="quote" id="quote">
+            <% if (quote) { %>
+              <p class="quote-text">« <%= quote.content.trim() %> »</p>
+              <footer class="quote-meta">
+                <cite class="quote-character"><%= (quote.characts || '').trim() %></cite>
+                <span class="quote-details"><%= [quote.actor, quote.season, quote.episode].filter(Boolean).map((s) => s.trim()).join(' · ') %></span>
+              </footer>
+            <% } else { %>
+              <p class="quote-text">« C'est pas faux. »</p>
+              <footer class="quote-meta">
+                <cite class="quote-character">Perceval</cite>
+                <span class="quote-details">Franck Pitiot</span>
+              </footer>
+            <% } %>
+          </blockquote>
+          <div class="card-actions">
+            <button class="btn btn-primary" type="button" id="getQuote">Nouvelle citation</button>
+            <button class="btn btn-ghost" type="button" id="copyQuote">Copier</button>
+          </div>
+        </article>
+
+        <article class="card card-sound">
+          <h3 class="card-title">Réplique audio</h3>
+          <div class="player" id="player">
+            <button class="player-toggle" type="button" id="playerToggle" aria-label="Lire la réplique" disabled>
+              <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+            </button>
+            <div class="player-body">
+              <p class="player-title" id="soundTitle" aria-live="polite">Cliquez sur « Nouveau son » pour lancer une réplique</p>
+              <div class="player-progress" aria-hidden="true"><span id="playerProgress"></span></div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-primary" type="button" id="getSound">Nouveau son</button>
+            <a class="btn btn-ghost is-hidden" id="downloadSound" href="#" download>Télécharger</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="sonotheque" class="section section-alt" aria-labelledby="library-title">
+    <div class="container">
+      <header class="section-head">
+        <p class="eyebrow">Sonothèque</p>
+        <h2 id="library-title">Toutes les répliques audio de Kaamelott</h2>
+        <p class="section-lead">
+          <%= sounds.length %> extraits à écouter directement ou à télécharger en MP3. Tapez un mot pour retrouver la réplique qui vous trotte dans la tête.
+        </p>
+      </header>
+
+      <div class="search">
+        <label class="visually-hidden" for="soundSearch">Rechercher une réplique</label>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="search" id="soundSearch" placeholder="Ex. : cuillère, poulette, faux…" autocomplete="off">
+        <span class="search-count" id="soundCount" aria-live="polite"><%= sounds.length %> sons</span>
+      </div>
+
+      <ul class="sound-grid" id="soundGrid">
+        <% sounds.forEach((sound) => { %>
+        <li data-keywords="<%= sound.keywords %>">
+          <button class="sound-item" type="button" data-src="<%= sound.path %>" data-title="<%= sound.title %>">
+            <span class="sound-icon" aria-hidden="true"></span>
+            <span class="sound-label"><%= sound.title %></span>
+          </button>
+          <a class="sound-download" href="<%= sound.path %>" download aria-label="Télécharger « <%= sound.title %> »">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+          </a>
+        </li>
+        <% }) %>
+      </ul>
+      <p class="empty is-hidden" id="soundEmpty">Aucune réplique trouvée. « Ah non, là aujourd'hui ça passera pas. »</p>
+    </div>
+  </section>
+
+  <section id="api" class="section" aria-labelledby="api-title">
+    <div class="container">
+      <header class="section-head">
+        <p class="eyebrow">Développeurs</p>
+        <h2 id="api-title">Documentation de l'API</h2>
+        <p class="section-lead">
+          Une API REST publique, gratuite et sans clé d'authentification. Toutes les réponses sont au format JSON et le CORS est ouvert : appelez-la depuis n'importe quel site.
+        </p>
+      </header>
+
+      <div class="api-grid">
+        <div class="api-block">
+          <h3>Citations</h3>
+          <ul class="endpoints">
+            <li><span class="method">GET</span><code>/api/v1/quote/random</code><button class="try" type="button" data-endpoint="/api/v1/quote/random">Essayer</button></li>
+            <li><span class="method">GET</span><code>/api/v1/quote/:id</code><button class="try" type="button" data-endpoint="/api/v1/quote/47">Essayer</button></li>
+            <li><span class="method">GET</span><code>/api/v1/quote/all</code></li>
+          </ul>
+          <h3>Sons</h3>
+          <ul class="endpoints">
+            <li><span class="method">GET</span><code>/api/v1/sound/random</code><button class="try" type="button" data-endpoint="/api/v1/sound/random">Essayer</button></li>
+            <li><span class="method">GET</span><code>/api/v1/sound/:texte</code><button class="try" type="button" data-endpoint="/api/v1/sound/cuillere">Essayer</button></li>
+            <li><span class="method">GET</span><code>/api/v1/sound/all</code></li>
+          </ul>
+          <p class="api-note">
+            Exemple avec JavaScript :
+          </p>
+          <pre class="code"><code>const res = await fetch('<%= siteUrl %>/api/v1/quote/random');
+const quote = await res.json();
+console.log(quote.content, '—', quote.characts);</code></pre>
+        </div>
+
+        <div class="api-block api-console">
+          <div class="console-head">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <code id="consoleEndpoint">GET /api/v1/quote/47</code>
+          </div>
+          <pre class="code console-output" id="consoleOutput" aria-live="polite"><code>{
+  "id": 47,
+  "content": "Si Monsieur et Madame préfèrent s'envoyer des fions dans l'intimité, je peux aussi me retirer.",
+  "actor": "Vanessa Guedj",
+  "characts": "Angharad",
+  "author": "Alexandre Astier",
+  "season": "Livre II",
+  "episode": "37 : La Joute Ancillaire"
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
 <%- include('./partials/footer') %>

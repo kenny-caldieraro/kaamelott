@@ -1,67 +1,38 @@
-const fs = require("fs-extra");
+const sounds = require('../../services/sounds');
+
+const handleError = (res, error) => {
+  res.status(500).json({ error: error.message });
+};
 
 const soundController = {
   async getSounds(_, res) {
     try {
-      const sounds = await fs.readdirSync("./public/sounds");
-      const paths = sounds.map((sound) => ({
-        name: sound,
-        path: `${process.env.URL_API}sounds/${sound}`,
-      }));
-      res.json(paths);
+      const list = await sounds.list();
+      res.json(list.map(sounds.toJSON));
     } catch (error) {
-      res.status(500).json({
-        error: error.message,
-      });
+      handleError(res, error);
     }
   },
 
   async getSound(req, res, next) {
     try {
-      const soundName = req.params.name;
-
-      // const checkSound = await fs.pathExists(`./public/sounds/${soundName}`);
-      // if (!checkSound) {
-      //   res.status(404).render('404');
-      // }
-      const response = {};
-      const sounds = await fs.readdirSync("./public/sounds");
-
-      soundName.split(" ").find((word) => {
-        const sound = sounds.find((data) => data.includes(word));
-        if (sound) {
-          response.name = sound;
-          response.path = `${process.env.URL_API}sounds/${sound}`;
-        }
-      });
-
-      if (!response.name) {
+      const sound = await sounds.search(req.params.name);
+      if (!sound) {
         return next();
       }
-
-      res.json({
-        ...response,
-      });
+      return res.json(sounds.toJSON(sound));
     } catch (error) {
-      res.status(500).json({
-        error: error.message,
-      });
+      return handleError(res, error);
     }
   },
 
   async randomSound(_, res) {
     try {
-      const sounds = await fs.readdirSync("./public/sounds");
-      const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
-      const soundPath = `${process.env.URL_API}sounds/${randomSound}`;
-      res.json({
-        name: randomSound,
-        path: soundPath,
-      });
+      const sound = await sounds.random();
+      res.set('Cache-Control', 'no-store');
+      res.json(sounds.toJSON(sound));
     } catch (error) {
-      res.status(500).json({
-        error: error.message,
-      });
+      handleError(res, error);
     }
   },
 };

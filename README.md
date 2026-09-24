@@ -2,6 +2,17 @@
 
 The website for test https://kaamelott.xyz
 
+## Installation
+
+Requires Node.js 20+ and a MySQL database (dump in `data/kaamelott.sql`).
+
+```bash
+cp .env.example .env   # then fill in the values
+npm install
+npm run dev            # development, auto-reload
+npm start              # production
+```
+
 ## Database
 
 I use mysql and sequelize to manage my database.
